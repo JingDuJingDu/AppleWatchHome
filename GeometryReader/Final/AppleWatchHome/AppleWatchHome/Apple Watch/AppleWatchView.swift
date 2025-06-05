@@ -152,7 +152,16 @@ struct AppleWatchView: View {
     }
 
     func slope(p1: CGPoint, p2: CGPoint) -> CGFloat {
-        return (p2.y - p1.y)/(p2.x - p1.x)
+        let deltaX = p2.x - p1.x
+
+        // Avoid NaN results when both points share the same X position.
+        // A vertical line has an undefined slope so we model it as
+        // a very large value using `.infinity`.
+        if deltaX == 0 {
+            return .infinity
+        }
+
+        return (p2.y - p1.y) / deltaX
     }
 
     func angle(slope: CGFloat) -> CGFloat {
